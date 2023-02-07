@@ -3,12 +3,12 @@ import { createSlice } from '@reduxjs/toolkit'
 const documentsData = createSlice({
   name: 'documents',
   initialState: {
-    data: [],
+    documents: [],
     isFetching: false,
   },
   reducers: {
     setData: (state, action) => {
-      state.data = action.payload
+      state.documents = action.payload
     },
     toggleIsFetching: (state, action) => {
       state.isFetching = action.payload

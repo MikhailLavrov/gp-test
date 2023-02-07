@@ -38,20 +38,11 @@ const columns: ColumnsType<DataType> = [
 ]
 
 const DataTable: React.FC = () => {
-  useEffect(() => {
-    store.dispatch(toggleIsFetching(true))
-    fetch('https://63e1288bdd7041cafb4281ad.mockapi.io/documents/documents')
-    .then(Response => Response.ok ? Response.json() : console.log(`Response.status: ${Response.status}`))
-    .then(data => store.dispatch(setData(data)))
-    .catch(error => console.error(`Fetching data error: ${error}`))
-    .finally(() => store.dispatch(toggleIsFetching(false)))
-  }, []);
-  
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log('selectedRowKeys changed: ', newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
-  };
+  }; 
   const rowSelection: TableRowSelection<DataType> = {
     selectedRowKeys,
     onChange: onSelectChange,
@@ -90,9 +81,23 @@ const DataTable: React.FC = () => {
     ],
   };
 
+  const [documents, setDocuments] = useState(store.getState().documents)
+  useEffect(() => {
+    store.dispatch(toggleIsFetching(true))
+    fetch('https://63e1288bdd7041cafb4281ad.mockapi.io/documents/documents')
+    .then(Response => Response.ok ? Response.json() : console.log(`Response.status: ${Response.status}`))
+    .then(data => {
+      store.dispatch(setData(data))
+      setDocuments(data)
+    })
+    .catch(error => console.error(`Fetching data error: ${error}`))
+    .finally(() => store.dispatch(toggleIsFetching(false)))
+  }, []);
+
   return <>
-          {store.getState().isFetching === true ? <Spin size='large' /> :
-          <Table rowSelection={rowSelection} columns={columns} dataSource={store.getState().data} />}
+          {store.getState().isFetching === true ? 
+          <Spin size='large' style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh'}} /> :
+          <Table rowSelection={rowSelection} columns={columns} dataSource={documents} />}
         </>
   ;
 }
