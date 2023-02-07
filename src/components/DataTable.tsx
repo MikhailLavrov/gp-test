@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
-import { setData } from '../redux/docsReducer.tsx';
-import { useDispatch } from 'react-redux';
 import store from '../redux/store';
+import { Spin } from 'antd';
 
 interface DataType {
   key: number;
@@ -38,13 +37,16 @@ const columns: ColumnsType<DataType> = [
 ]
 
 const DataTable: React.FC = () => {
-  // let state = store.getState();
-  const dispatch = useDispatch();
+  const [loadingStatus, setLoading] = useState(true);
+  let state = store.getState();
+  const [data, setData] = useState(state.documents.data);
   useEffect(() => {
     fetch('https://63e1288bdd7041cafb4281ad.mockapi.io/documents/documents')
-    .then( ((Response) => Response.json()))
-    .then(data => dispatch(setData(data)))
-  });
+    .then(Response => Response.ok ? Response.json() : console.log(`Response.status: ${Response.status}`))
+    .then(data => setData(data))
+    .catch(error => console.error(`Fetching data error: ${error}`))
+    .finally(() => setLoading(false))
+  }, [state.documents]);
   
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -89,7 +91,13 @@ const DataTable: React.FC = () => {
     ],
   };
 
-  return <Table rowSelection={rowSelection} columns={columns} dataSource={store.getState().documents.data} />;
+  return <>
+          {loadingStatus ? 
+          <Spin style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh'}}/>
+          :
+          <Table rowSelection={rowSelection} columns={columns} dataSource={data} />}
+        </>
+  ;
 }
 
 export default DataTable;
