@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import docsDataReducer from './docsReducer.tsx'
+import documentsData from './documentsReducer.tsx'
 
-export default configureStore({
-  reducer: {
-    documents: docsDataReducer,
-  }
-});
+const store = configureStore({
+  reducer: documentsData.reducer
+})
+
+export default store;
+
+store.subscribe(() => console.log(store.getState()))
