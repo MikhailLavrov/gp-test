@@ -4,6 +4,8 @@ import type { ColumnsType } from 'antd/es/table';
 import { Typography } from 'antd';
 import ModalNotify from './ModalNotify.tsx';
 
+const DATA_URL = 'https://63e1288bdd7041cafb4281ad.mockapi.io/documents';
+
 const { Text } = Typography;
 
 interface DataType {
@@ -56,7 +58,7 @@ const DataTable: React.FC = (props) => {
   }, [selectedRowKeys, documents]);
   
   useEffect(() => {
-    fetch('https://63e1288bdd7041cafb4281ad.mockapi.io/documents')
+    fetch(DATA_URL)
     .then(Response => Response.ok ? Response.json() : console.log(`Response.status: ${Response.status}`))
     .then(data => {
       // const filteredData = data.filter(doc => doc.currency === 'USD' || doc.currency === 'RUB');
@@ -93,7 +95,7 @@ const DataTable: React.FC = (props) => {
                     <Text type="danger">{totalPrice}</Text>
                   </Table.Summary.Cell>
                 </Table.Summary.Row>
-                <ModalNotify selectedDocuments={selectedDocuments}/>
+                <ModalNotify selectedDocuments={selectedDocuments} selectedRowKeys={selectedRowKeys}/>
               </>
             );
             }}

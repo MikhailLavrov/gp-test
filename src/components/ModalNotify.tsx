@@ -4,7 +4,7 @@ import { Button, Modal, Space } from 'antd';
 
 const ReachableContext = createContext<string | null>(null);
 
-const ModalNotify: React.FC = ({selectedDocuments}) => {
+const ModalNotify: React.FC = ({selectedDocuments, selectedRowKeys}) => {
   const [modal, contextHolder] = Modal.useModal();
   
   let handleCancel = () => {
@@ -13,7 +13,7 @@ const ModalNotify: React.FC = ({selectedDocuments}) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ selectedDocuments })
+      body: JSON.stringify({ selectedRowKeys })
     })
       .then(response => response.json())
       .then(data => console.log(data))
