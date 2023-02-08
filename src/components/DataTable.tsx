@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import store from '../redux/store';
-import { setData } from '../redux/documentsReducer.tsx';
 import { Typography } from 'antd';
 import ModalNotify from './ModalNotify.tsx';
 
@@ -40,34 +38,26 @@ const columns: ColumnsType<DataType> = [
   },
 ]
 
-const DataTable: React.FC = () => {
+const DataTable: React.FC = (props) => {
+  const { documents, setData } = props;
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log('selectedRowKeys changed: ', newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
-  }
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  }
-  const [documents, setDocuments] = useState(store.getState().documents)
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => { setSelectedRowKeys(newSelectedRowKeys) }
+  const rowSelection = { selectedRowKeys, onChange: onSelectChange }
   
   let selectedDocuments = useMemo(() => {
     return selectedRowKeys.map(i => documents[i - 1]);
   }, [selectedRowKeys, documents]);
-
-  // console.log(selectedDocuments);
   
   useEffect(() => {
     fetch('https://63e1288bdd7041cafb4281ad.mockapi.io/documents')
     .then(Response => Response.ok ? Response.json() : console.log(`Response.status: ${Response.status}`))
     .then(data => {
-      const filteredData = data.filter(document => document.currency === 'USD' || document.currency === 'RUB');
-      store.dispatch(setData(filteredData))
-      setDocuments(filteredData)
+      // const filteredData = data.filter(doc => doc.currency === 'USD' || doc.currency === 'RUB');
+      setData(data)
     })
     .catch(error => console.error(`Fetching data error: ${error}`))
-  }, []);
+  }, [setData]);
 
   return <>
           <Table
@@ -80,26 +70,26 @@ const DataTable: React.FC = () => {
               let totalQuantity = 0;
               let totalPrice = 0;
 
-              pageData.forEach(({ quantity, price }) => {
-                totalQuantity += quantity;
-                totalPrice += price;
-              });
+            pageData.forEach(({ quantity, price }) => {
+              totalQuantity += quantity;
+              totalPrice += price;
+            });
 
-              return (
-                <>
-                  <Table.Summary.Row>
-                    <Table.Summary.Cell index={0} colSpan={2}>Итого</Table.Summary.Cell>
-                    <Table.Summary.Cell index={1} colSpan={1}>
-                      <Text type="danger">{totalQuantity}</Text>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell index={2} colSpan={1} />
-                    <Table.Summary.Cell index={3} colSpan={1}>
-                      <Text type="danger">{totalPrice}</Text>
-                    </Table.Summary.Cell>
-                  </Table.Summary.Row>
-                  <ModalNotify selectedDocuments={selectedDocuments}/>
-                </>
-              );
+            return (
+              <>
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0} colSpan={2}>Общее количество:</Table.Summary.Cell>
+                  <Table.Summary.Cell index={1} colSpan={1}>
+                    <Text type="danger">{totalQuantity}</Text>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2} colSpan={1} />
+                  <Table.Summary.Cell index={3} colSpan={1}>
+                    <Text type="danger">{totalPrice}</Text>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+                <ModalNotify selectedDocuments={selectedDocuments}/>
+              </>
+            );
             }}
           />
         </>;
