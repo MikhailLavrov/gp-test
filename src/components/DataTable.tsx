@@ -19,22 +19,28 @@ const columns: ColumnsType<DataType> = [
   {
     title: 'Название',
     dataIndex: 'name',
+    sorter: (a, b) => a.name.localeCompare(b.name),
   },
   {
     title: 'Количество',
     dataIndex: 'quantity',
+    sorter: (a, b) => a.quantity - b.quantity,
   },
   {
     title: 'Дата доставки',
     dataIndex: 'deliveryDate',
+    sorter: (a, b) => a.deliveryDate.localeCompare(b.deliveryDate),
+    sortOrder: 'ascend',
   },
   {
     title: 'Стоимость',
     dataIndex: 'price',
+    sorter: (a, b) => a.price - b.price,
   },
   {
     title: 'Валюта',
     dataIndex: 'currency',
+    sorter: (a, b) => a.currency.localeCompare(b.currency),
   },
 ]
 

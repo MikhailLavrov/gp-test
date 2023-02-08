@@ -6,7 +6,6 @@ import { GithubOutlined } from '@ant-design/icons';
 const { Header, Content, Footer } = Layout;
 
 const App: React.FC = () => {
-
   return (
     <Layout className="layout">
       <Header style={{color: '#fff'}}>Data: mockapi.io / Design: ant.design / Statement: Redux / ReactJS / TypeScript </Header>
