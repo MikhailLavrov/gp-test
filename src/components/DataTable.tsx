@@ -62,8 +62,9 @@ const DataTable: React.FC = () => {
     fetch('https://63e1288bdd7041cafb4281ad.mockapi.io/documents')
     .then(Response => Response.ok ? Response.json() : console.log(`Response.status: ${Response.status}`))
     .then(data => {
-      store.dispatch(setData(data))
-      setDocuments(data)
+      const filteredData = data.filter(document => document.currency === 'USD' || document.currency === 'RUB');
+      store.dispatch(setData(filteredData))
+      setDocuments(filteredData)
     })
     .catch(error => console.error(`Fetching data error: ${error}`))
   }, []);
