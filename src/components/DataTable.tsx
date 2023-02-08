@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import store from '../redux/store';
 import { setData } from '../redux/documentsReducer.tsx';
 import { Typography } from 'antd';
+import ModalNotify from './ModalNotify.tsx';
 
 const { Text } = Typography;
 
 interface DataType {
   key: number;
+  id: string;
   name: string;
   quantity: number;
   deliveryDate: string;
@@ -48,8 +50,14 @@ const DataTable: React.FC = () => {
     selectedRowKeys,
     onChange: onSelectChange,
   }
-  
   const [documents, setDocuments] = useState(store.getState().documents)
+  
+  let selectedDocuments = useMemo(() => {
+    return selectedRowKeys.map(i => documents[i - 1]);
+  }, [selectedRowKeys, documents]);
+
+  // console.log(selectedDocuments);
+  
   useEffect(() => {
     fetch('https://63e1288bdd7041cafb4281ad.mockapi.io/documents')
     .then(Response => Response.ok ? Response.json() : console.log(`Response.status: ${Response.status}`))
@@ -88,6 +96,7 @@ const DataTable: React.FC = () => {
                       <Text type="danger">{totalPrice}</Text>
                     </Table.Summary.Cell>
                   </Table.Summary.Row>
+                  <ModalNotify selectedDocuments={selectedDocuments}/>
                 </>
               );
             }}

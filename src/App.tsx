@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout } from 'antd';
 import DataTable from './components/DataTable.tsx';
 import { GithubOutlined } from '@ant-design/icons';
-import ModalNotify from './components/ModalNotify.tsx';
+// import ModalNotify from './components/ModalNotify.tsx';
 
 const { Header, Content, Footer } = Layout;
 
@@ -13,7 +13,7 @@ const App: React.FC = () => {
       <Header style={{color: '#fff'}}>Data: mockapi.io / Design: ant.design / Statement: Redux / ReactJS / TypeScript </Header>
       <Content style={{ padding: '0 50px' }}>
         <DataTable />
-        <ModalNotify />
+        {/* <ModalNotify /> */}
       </Content>
       <Footer style={{ textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         ©2023 &nbsp;
