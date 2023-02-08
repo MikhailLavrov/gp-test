@@ -32,7 +32,6 @@ const columns: ColumnsType<DataType> = [
     title: 'Дата доставки',
     dataIndex: 'deliveryDate',
     sorter: (a, b) => a.deliveryDate.localeCompare(b.deliveryDate),
-    sortOrder: 'ascend',
   },
   {
     title: 'Стоимость',
@@ -48,7 +47,7 @@ const columns: ColumnsType<DataType> = [
 
 const DataTable: React.FC = (props) => {
   const { documents, setData } = props;
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>(documents)
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => { setSelectedRowKeys(newSelectedRowKeys) }
   const rowSelection = { selectedRowKeys, onChange: onSelectChange }
@@ -61,8 +60,15 @@ const DataTable: React.FC = (props) => {
     fetch(DATA_URL)
     .then(Response => Response.ok ? Response.json() : console.log(`Response.status: ${Response.status}`))
     .then(data => {
-      // const filteredData = data.filter(doc => doc.currency === 'USD' || doc.currency === 'RUB');
-      setData(data)
+      // TODO Фильтрация работает, но путает keys при селекте товаров :(
+        // const filteredData = data.filter(doc => doc.currency === 'USD' || doc.currency === 'RUB');
+
+      const filteredData = data.map(item => ({
+        ...item,
+        deliveryDate: item.deliveryDate.substring(0, 10),
+      }));
+
+      setData(filteredData)
     })
     .catch(error => console.error(`Fetching data error: ${error}`))
   }, [setData]);
