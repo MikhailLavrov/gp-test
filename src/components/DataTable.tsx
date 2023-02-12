@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Typography } from 'antd';
 import ModalNotify from './ModalNotify.tsx';
+import { documentsApi } from '../api/documents.js';
 
 const DATA_URL = 'https://63e1288bdd7041cafb4281ad.mockapi.io/documents';
 
@@ -45,8 +46,7 @@ const columns: ColumnsType<DataType> = [
   },
 ]
 
-const DataTable: React.FC = (props) => {
-  const { documents, setData } = props;
+const DataTable: React.FC = ({ documents, setData }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>(documents)
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => { setSelectedRowKeys(newSelectedRowKeys) }
@@ -57,20 +57,7 @@ const DataTable: React.FC = (props) => {
   }, [selectedRowKeys, documents]);
   
   useEffect(() => {
-    fetch(DATA_URL)
-    .then(Response => Response.ok ? Response.json() : console.log(`Response.status: ${Response.status}`))
-    .then(data => {
-      // TODO Фильтрация работает, но путает keys при селекте товаров :(
-        // const filteredData = data.filter(doc => doc.currency === 'USD' || doc.currency === 'RUB');
-
-      const filteredData = data.map(item => ({
-        ...item,
-        deliveryDate: item.deliveryDate.substring(0, 10),
-      }));
-
-      setData(filteredData)
-    })
-    .catch(error => console.error(`Fetching data error: ${error}`))
+    documentsApi.getData(DATA_URL, setData)
   }, [setData]);
 
   return <>
